@@ -12,7 +12,7 @@ public class Today {
 
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.err.println("Usage: java Today --mm-dd primary/secondary");
+            System.err.println("Usage: java Today --mm-dd primary/secondary or java Today --mm-dd primary");
             System.exit(1);
         }
 
@@ -30,7 +30,7 @@ public class Today {
         try {
             filterCategory = Category.parse(args[1]);
         } catch (IllegalArgumentException e) {
-            System.err.println("Invalid category format. Use primary/secondary.");
+            System.err.println("Invalid category format. Use primary/secondary or just primary.");
             System.exit(1);
             return;
         }
@@ -61,6 +61,11 @@ public class Today {
             if (isSameDate(filterDate, event.getDate()) && event.getCategory().matches(filterCategory)) {
                 filteredEvents.add(event);
             }
+        }
+
+        if (filteredEvents.isEmpty()) {
+            System.out.println("No events found for the given date and category.");
+            return;
         }
 
         Collections.sort(filteredEvents, Collections.reverseOrder());
