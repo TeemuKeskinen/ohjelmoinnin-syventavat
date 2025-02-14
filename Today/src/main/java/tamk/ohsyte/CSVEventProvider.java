@@ -65,7 +65,10 @@ public class CSVEventProvider implements EventProvider {
         String categoryString = record.get(2);
         String[] categoryParts = categoryString.split("/");
         String primary = categoryParts[0];
-        String secondary = categoryParts.length == 2 ? categoryParts[1] : null;
+        String secondary = null;
+        if (categoryParts.length == 2) {
+            secondary = categoryParts[1];
+        }
         Category category = new Category(primary, secondary);
         return new Event(date, description, category);
     }
