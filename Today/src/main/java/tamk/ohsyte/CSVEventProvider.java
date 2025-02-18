@@ -25,8 +25,8 @@ public class CSVEventProvider implements EventProvider {
                 this.events.add(makeEvent(record));
             }
             System.out.printf("Read %d events from CSV file%n", this.events.size());
-        } catch (IOException ioe) {
-            System.err.println("File '" + fileName + "' not found");
+        } catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
         }
     }
 
@@ -57,6 +57,10 @@ public class CSVEventProvider implements EventProvider {
             }
         }
         return result;
+    }
+
+    public String getIdentifier() {
+        return "CSV";
     }
 
     private Event makeEvent(CSVRecord record) {

@@ -12,18 +12,29 @@ public class Category implements Comparable<Category> {
 
     /**
      * Constructs a category with primary and secondary values.
-     * 
+     *
      * @param primary the primary category
      * @param secondary the secondary category
      */
     public Category(String primary, String secondary) {
-        this.primary = primary;
+        if (primary == null) {
+            throw new IllegalArgumentException("Primary category is null!");
+        }
+        this.primary = primary.toLowerCase();
+
         this.secondary = secondary;
+        if (secondary != null) {
+            this.secondary = secondary.toLowerCase();
+        }
+    }
+
+    public Category(String primary) {
+        this(primary, null);
     }
 
     /**
      * Gets the primary category.
-     * 
+     *
      * @return primary
      */
     public String getPrimary() {
@@ -32,7 +43,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Gets the secondary category.
-     * 
+     *
      * @return secondary
      */
     public String getSecondary() {
@@ -41,17 +52,25 @@ public class Category implements Comparable<Category> {
 
     /**
      * Returns a string representation of this category.
-     * 
-     * @return category as string 
+     *
+     * @return category as string
      */
     @Override
     public String toString() {
-        return String.format("%s/%s", this.primary, this.secondary);
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.primary);
+
+        if (this.secondary != null) {
+            sb.append("/");
+            sb.append(this.secondary);
+        }
+
+        return sb.toString();
     }
 
     /**
      * Tests for equality with another category.
-     * 
+     *
      * @return true if categories are equal, false otherwise
      */
     @Override
@@ -65,7 +84,7 @@ public class Category implements Comparable<Category> {
         // Cast to our type:
         Category that = (Category) o;
 
-        if (this.primary.equals(that.primary) && 
+        if (this.primary.equals(that.primary) &&
             this.secondary.equals(that.secondary)) {
             return true;
         }
@@ -75,7 +94,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Returns a hash code for this category.
-     * 
+     *
      * @return hash code computed based on primary and secondary categories
      */
     @Override
@@ -86,7 +105,7 @@ public class Category implements Comparable<Category> {
     @Override
     public int compareTo(Category other) {
         int result = Objects.compare(
-            this.primary, 
+            this.primary,
             other.getPrimary(),
             Comparator.naturalOrder());
         if (result != 0) {
@@ -97,5 +116,30 @@ public class Category implements Comparable<Category> {
             this.secondary,
             other.getSecondary(),
             Comparator.naturalOrder());
+    }
+
+    /**
+     * Parse a category string in the format "primary"
+     * or "primary/secondary" and make a category of them.
+     * Folds the category parts to lower case.
+     * Throws java.lang.IllegalArgumentException if the
+     * string is of the wrong format.
+     *
+     * @param categoryString the string to parse
+     * @return new category
+     */
+    public static Category parse(String categoryString) {
+        if (categoryString == null ||
+                categoryString.isEmpty() ||
+                categoryString.isBlank()) {
+            throw new IllegalArgumentException("invalid category string");
+        }
+
+        String[] categoryParts = categoryString.split("/");
+        if (categoryParts.length > 1) {
+            return new Category(categoryParts[0], categoryParts[1]);
+        } else {
+            return new Category(categoryParts[0]);
+        }
     }
 }

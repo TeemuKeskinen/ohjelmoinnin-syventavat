@@ -2,8 +2,8 @@ package tamk.ohsyte;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Represents an event in history.
@@ -15,11 +15,11 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Constructs a new event.
-     * 
+     *
      * @param date the date of the event
      * @param description the description of the event
      * @param category the category of the event
-     * 
+     *
      * @see Category
      */
     public Event(LocalDate date, String description, Category category) {
@@ -30,7 +30,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Gets the date of the event.
-     * 
+     *
      * @return the date
      */
     public LocalDate getDate() {
@@ -39,7 +39,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Gets the event description.
-     * 
+     *
      * @return the description
      */
     public String getDescription() {
@@ -48,7 +48,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Gets the category of the event.
-     * 
+     *
      * @return the category
      * @see Category
      */
@@ -58,7 +58,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Returns a string representation of this event.
-     * 
+     *
      * @return the event as a string
      */
     @Override
@@ -70,7 +70,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Tests for equality with another event.
-     * 
+     *
      * @return true if events are equal, false otherwise
      */
     @Override
@@ -85,7 +85,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
         Event that = (Event) o;
 
         if (Objects.equals(this.date, that.date) &&
-            Objects.equals(this.description, that.description) && 
+            Objects.equals(this.description, that.description) &&
             Objects.equals(this.category, that.category)) {
             return true;
         }
@@ -95,7 +95,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Returns a hash code for this event.
-     * 
+     *
      * @return hash code computed based on the fields
      */
     @Override
@@ -105,18 +105,18 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Gets the relation of this event with today.
-     * 
+     *
      * @return the relation
-     * @see TodayRelatable.Relation
+     * @see Relation
      */
     public Relation getTodayRelation() {
         long days = getDays();
         if (days > 0) {
-            return TodayRelatable.Relation.AFTER_TODAY;
+            return Relation.AFTER_TODAY;
         } else if (days < 0) {  // end is before start
-            return TodayRelatable.Relation.BEFORE_TODAY;
+            return Relation.BEFORE_TODAY;
         } else {
-            return TodayRelatable.Relation.TODAY;
+            return Relation.TODAY;
         }
     }
 
@@ -129,7 +129,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
      * Returns the difference between today and this event
      * in days. The return value is always positive; use
      * getRelation() to determine the relative position.
-     * 
+     *
      * @return number of days between today and this event
      */
     public long getTodayDifference() {
@@ -140,9 +140,9 @@ public class Event implements TodayRelatable, Comparable<Event> {
 
     /**
      * Compares this event to another.
-     * 
+     *
      * @return negative, zero, or positive
-     * @see java.lang.Comparable
+     * @see Comparable
      */
     @Override
     public int compareTo(Event other) {
@@ -163,7 +163,7 @@ public class Event implements TodayRelatable, Comparable<Event> {
         }
 
         return Objects.compare(
-            this.category, 
+            this.category,
             other.category,
             Comparator.naturalOrder());
     }
