@@ -39,6 +39,9 @@ public class Today {
 
         manager.removeEventProvider("CSV");
 
+        identifiers = manager.getEventProviderIdentifiers();
+        System.out.println("Event providers: "
+        + Arrays.toString(identifiers.toArray()));
         providerCount = manager.getEventProviderCount();
         events = manager.getAllEvents();  // refresh event list
         eventCount = events.size();

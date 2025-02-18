@@ -33,7 +33,11 @@ public class EventManager {
      * @return <code>true</code> if the provider was added, <code>false</code> otherwise
      */
     public boolean addEventProvider(EventProvider provider) {
-        this.eventProviders.add(provider);
+        try {
+            this.eventProviders.add(provider);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Adding of event providers is not supported yet.", e);
+        }
         return true;
     }
 
