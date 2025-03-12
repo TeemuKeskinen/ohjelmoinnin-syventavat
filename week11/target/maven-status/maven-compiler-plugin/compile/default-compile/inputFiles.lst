@@ -1,0 +1,17 @@
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\commands\ListEvents.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\commands\ListProviders.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\AnnualEvent.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\AnnualEventComparator.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\Category.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\Event.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\SingularEvent.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\datamodel\SingularEventComparator.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\EventFactory.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\EventManager.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\filters\CategoryFilter.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\filters\DateCategoryFilter.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\filters\DateFilter.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\filters\EventFilter.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\providers\CSVEventProvider.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\providers\EventProvider.java
+c:\Users\temek\ohjelmoinnin-syventavat\week11\src\main\java\tamk\ohsyte\Today.java

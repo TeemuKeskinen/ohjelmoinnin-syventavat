@@ -1,0 +1,5 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "maven.view": "hierarchical",
+    "jdk.runConfig.arguments": "addevent --date 2038-01-19 --category computing/unix --description 'Unix clock rolls over' --file c:\\Users\\temek\\.today\\new_events.csv"
+}
