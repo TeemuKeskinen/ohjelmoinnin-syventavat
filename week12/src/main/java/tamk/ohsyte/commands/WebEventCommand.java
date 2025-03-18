@@ -6,11 +6,14 @@ import java.util.List;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import tamk.ohsyte.EventManager;
 import tamk.ohsyte.datamodel.Event;
 import tamk.ohsyte.providers.WebEventProvider;
 
 @Command(name = "web-events", description = "Fetches events from the web")
 public class WebEventCommand implements Runnable {
+
+    EventManager manager = EventManager.getInstance();
 
     @Option(names = {"-d", "--date"}, description = "Date for which to fetch events (format: MM-dd)", required = true)
     private String date;
@@ -23,6 +26,7 @@ public class WebEventCommand implements Runnable {
         try {
             URI serverUri = new URI(site + date);
             WebEventProvider webEventProvider = new WebEventProvider(serverUri);
+            manager.addEventProvider(webEventProvider);
             List<Event> events = webEventProvider.getEvents();
             // Display events
             events.forEach(event -> System.out.println(event));
