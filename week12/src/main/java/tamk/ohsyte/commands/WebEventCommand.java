@@ -28,7 +28,6 @@ public class WebEventCommand implements Runnable {
             WebEventProvider webEventProvider = new WebEventProvider(serverUri);
             manager.addEventProvider(webEventProvider);
             List<Event> events = webEventProvider.getEvents();
-            // Display events
             events.forEach(event -> System.out.println(event));
         } catch (URISyntaxException e) {
             System.err.println("Invalid URI: " + e.getLocalizedMessage());
