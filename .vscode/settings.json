@@ -1,0 +1,4 @@
+{
+    "java.dependency.syncWithFolderExplorer": false,
+    "jdk.runConfig.arguments": "listevents -c test/fake"
+}
