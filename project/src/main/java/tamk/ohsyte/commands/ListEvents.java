@@ -8,17 +8,18 @@ import java.util.List;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import tamk.ohsyte.EventManager;
-import tamk.ohsyte.datamodel.AnnualEvent;
-import tamk.ohsyte.datamodel.AnnualEventComparator;
-import tamk.ohsyte.datamodel.Category;
+
+import tamk.ohsyte.*;
 import tamk.ohsyte.datamodel.Event;
+import tamk.ohsyte.datamodel.AnnualEvent;
 import tamk.ohsyte.datamodel.SingularEvent;
+import tamk.ohsyte.datamodel.Category;
+import tamk.ohsyte.datamodel.AnnualEventComparator;
 import tamk.ohsyte.datamodel.SingularEventComparator;
+
 import tamk.ohsyte.filters.DateCategoryFilter;
 import tamk.ohsyte.filters.DateFilter;
 import tamk.ohsyte.filters.EventFilter;
-import tamk.ohsyte.providers.SQLiteEventProvider;
 
 @Command(name = "listevents")
 public class ListEvents implements Runnable {
@@ -28,13 +29,9 @@ public class ListEvents implements Runnable {
     @Option(names = "-d", description = "Date of events to list in the format MM-dd (default is today)")
     String dateOptionString;
 
-    @Option(names = "-db", required = false, description = "Path to the database file")
-    String databaseFile;
-
     @Override
     public void run() {
         Category category = null;
-        String homeDirectory = System.getProperty("user.home");
 
         if (this.categoryOptionString != null) {
             try {
@@ -72,16 +69,6 @@ public class ListEvents implements Runnable {
         // We actually seem to have no use for CategoryFilter.
 
         EventManager manager = EventManager.getInstance();
-
-        // Add SQLiteEventProvider if database file is specified or use default location
-        if (databaseFile == null) {
-            databaseFile = homeDirectory + "/.today/events.sqlite3";
-            SQLiteEventProvider sqliteProvider = new SQLiteEventProvider(databaseFile);
-            manager.addEventProvider(sqliteProvider);
-        }
-        SQLiteEventProvider sqliteProvider = new SQLiteEventProvider(homeDirectory + "/.today/" + databaseFile);
-        manager.addEventProvider(sqliteProvider);
-
         List<Event> filteredEvents = manager.getFilteredEvents(filter);
 
         List<AnnualEvent> annualEvents = new ArrayList<>();
@@ -100,9 +87,9 @@ public class ListEvents implements Runnable {
 
             for (AnnualEvent a : annualEvents) {
                 System.out.printf(
-                        "- %s (%s)%n",
-                        a.getDescription(),
-                        a.getCategory());
+                    "- %s (%s)%n",
+                    a.getDescription(),
+                    a.getCategory());
             }
         }
 

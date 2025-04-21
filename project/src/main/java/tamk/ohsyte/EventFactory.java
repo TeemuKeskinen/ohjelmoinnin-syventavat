@@ -37,6 +37,12 @@ public class EventFactory {
                 //System.out.printf("Making SingularEvent: %s, %s, %s%n", dateString, description, category);
                 return new SingularEvent(date, description, category);
             }
+
+            if (Character.isLetter(dateString.charAt(0))) {
+                Rule rule = VerbalRule.parse(dateString);
+                System.out.printf("Making RuleBasedEvent: %s, %s, %s%n", rule, description, category);
+                return new RuleBasedEvent(rule, description, category);
+            }
         } catch (DateTimeParseException dtpe) {
             System.err.println("Error parsing date for event: " + dtpe.getLocalizedMessage());
         }

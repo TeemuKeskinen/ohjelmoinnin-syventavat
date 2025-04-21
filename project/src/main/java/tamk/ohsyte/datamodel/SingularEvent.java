@@ -32,7 +32,7 @@ public class SingularEvent extends Event implements Comparable<Event> {
      */
     public LocalDate getDate() {
         return LocalDate.of(
-            this.year, 
+            this.year,
             this.getMonthDay().getMonth(),
             this.getMonthDay().getDayOfMonth());
     }
@@ -62,7 +62,7 @@ public class SingularEvent extends Event implements Comparable<Event> {
         // Cast to our type:
         SingularEvent that = (SingularEvent) o;
 
-        if (Objects.equals(this.year, that.year) && 
+        if (Objects.equals(this.year, that.year) &&
             Objects.equals(this.getMonthDay(), that.getMonthDay()) &&
             Objects.equals(this.getDescription(), that.getDescription()) &&
             Objects.equals(this.getCategory(), that.getCategory())) {
@@ -107,7 +107,7 @@ public class SingularEvent extends Event implements Comparable<Event> {
         if (result != 0) {
             return result;
         }
-        
+
         result = Objects.compare(
                 this.getDescription(),
                 otherEvent.getDescription(),

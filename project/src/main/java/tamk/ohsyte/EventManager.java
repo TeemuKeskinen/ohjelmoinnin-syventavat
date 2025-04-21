@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import tamk.ohsyte.datamodel.Event;
-import tamk.ohsyte.providers.EventProvider;
 import tamk.ohsyte.filters.EventFilter;
+import tamk.ohsyte.providers.EventProvider;
 
 /**
  * Manages and queries the events available from event providers.
@@ -84,6 +84,24 @@ public class EventManager {
     */
 
     /**
+     * Adds an event to the specified event provider.
+     *
+     * @param category the category to match
+     * @return list of events in the specified category
+     */
+    public void addEventToProvider(Event event, String providerId) {
+        EventProvider provider = eventProviders.stream()
+                .filter(p -> p.getIdentifier().equals(providerId))
+                .findFirst()
+                .orElse(null);
+
+        if (provider != null && provider.isAddSupported()) {
+            provider.addEvent(event);
+        } else {
+            System.err.println("Provider not found or does not support adding events.");
+        }
+    }
+     /**
      * Gets the number of event providers for the manager.
      *
      * @return the number of event providers
@@ -93,6 +111,14 @@ public class EventManager {
     }
 
     /**
+     * Gets the event providers of the manager.
+     *
+     * @return list of event providers
+     */
+    public List<EventProvider> getEventProviders() {
+        return this.eventProviders;
+    }
+    /**
      * Gets the identifiers of all event providers of the manager.
      *
      * @return list of provider identifiers
@@ -100,6 +126,12 @@ public class EventManager {
     public List<String> getEventProviderIdentifiers() {
         return this.eventProviders.stream()
                 .map(EventProvider::getIdentifier)
+                .toList();
+    }
+
+    public List<EventProvider> getEventProviderFile() {
+        return this.eventProviders.stream()
+                .filter(provider -> provider.getIdentifier().equals("file"))
                 .toList();
     }
 

@@ -11,6 +11,7 @@ import tamk.ohsyte.datamodel.SingularEvent;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Month;
 import java.time.MonthDay;
@@ -69,7 +70,7 @@ public class CSVEventProvider implements EventProvider {
      */
     @Override
     public List<Event> getEventsOfCategory(Category category) {
-        List<Event> result = new ArrayList<Event>();
+        List<Event> result = new ArrayList<>();
         for (Event event : this.events) {
             if (event.getCategory().equals(category)) {
                 result.add(event);
@@ -121,4 +122,45 @@ public class CSVEventProvider implements EventProvider {
     public String getIdentifier() {
         return this.identifier;
     }
+
+
+    /**
+     * Gets the filename of this event provider.
+     *
+     * @return the filename
+     */
+    @Override
+    public String getFilename() {
+        return EventManager.getInstance().getEventProviderFile().stream()
+                .filter(provider -> provider instanceof CSVEventProvider)
+                .map(provider -> ((CSVEventProvider) provider).identifier)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Adds an event to this provider.
+     *
+     * @param event the event to add
+     */
+    @Override
+    public void addEvent(Event event) {
+        String eventDate = event instanceof SingularEvent ?
+            ((SingularEvent) event).getDate().toString() :
+            "--" + ((AnnualEvent) event).getMonthDay().toString();
+        String eventDescription = event.getDescription();
+        String category = event.getCategory().toString();
+        String fileName = this.getFilename();
+
+        try (FileWriter writer = new FileWriter(fileName, true)) {
+            writer.append(eventDate).append(",")
+                  .append(eventDescription).append(",")
+                  .append(category).append("\n");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isAddSupported() { return true; }
 }

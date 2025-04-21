@@ -1,3 +1,4 @@
+
 package tamk.ohsyte.datamodel;
 
 import java.util.Comparator;
@@ -12,7 +13,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Constructs a category with primary and secondary values.
-     * 
+     *
      * @param primary the primary category
      * @param secondary the secondary category
      */
@@ -35,7 +36,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Gets the primary category.
-     * 
+     *
      * @return primary
      */
     public String getPrimary() {
@@ -44,7 +45,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Gets the secondary category.
-     * 
+     *
      * @return secondary
      */
     public String getSecondary() {
@@ -53,8 +54,8 @@ public class Category implements Comparable<Category> {
 
     /**
      * Returns a string representation of this category.
-     * 
-     * @return category as string 
+     *
+     * @return category as string
      */
     @Override
     public String toString() {
@@ -71,7 +72,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Tests for equality with another category.
-     * 
+     *
      * @return true if categories are equal, false otherwise
      */
     @Override
@@ -91,7 +92,7 @@ public class Category implements Comparable<Category> {
 
     /**
      * Returns a hash code for this category.
-     * 
+     *
      * @return hash code computed based on primary and secondary categories
      */
     @Override
@@ -102,7 +103,7 @@ public class Category implements Comparable<Category> {
     @Override
     public int compareTo(Category other) {
         int result = Objects.compare(
-            this.primary, 
+            this.primary,
             other.getPrimary(),
             Comparator.naturalOrder());
         if (result != 0) {

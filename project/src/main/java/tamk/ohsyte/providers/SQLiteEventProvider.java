@@ -10,14 +10,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import tamk.ohsyte.EventFactory;
+import tamk.ohsyte.datamodel.AnnualEvent;
 import tamk.ohsyte.datamodel.Category;
 import tamk.ohsyte.datamodel.Event;
+import tamk.ohsyte.datamodel.SingularEvent;
 
 public class SQLiteEventProvider implements EventProvider {
-    private String url;
+    private final String url;
+    private final String identifier;
 
-    public SQLiteEventProvider(String fileName) {
+    public SQLiteEventProvider(String fileName, String identifier) {
         this.url = "jdbc:sqlite:" + fileName;
+        this.identifier = identifier;
         // TODO: normalize path separators to '/'
         //System.out.println("Database URL string = " + this.url);
     }
@@ -53,21 +57,6 @@ public class SQLiteEventProvider implements EventProvider {
         return result;
     }
 
-    public void addEvent(String eventDate, String eventDescription, int categoryId) {
-        String query = "INSERT INTO event (event_date, event_description, category_id) VALUES (?, ?, ?)";
-
-        try (var conn = DriverManager.getConnection(url);
-             var pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, eventDate);
-            pstmt.setString(2, eventDescription);
-            pstmt.setInt(3, categoryId);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
     @Override
     public List<Event> getEvents() {
         // Get all categories from the database
@@ -96,6 +85,54 @@ public class SQLiteEventProvider implements EventProvider {
 
         return result;
     }
+    @Override
+    public void addEvent(Event event) {
+        String eventDate = event instanceof SingularEvent ?
+            ((SingularEvent) event).getDate().toString() :
+            "--" + ((AnnualEvent) event).getMonthDay().toString();
+        String eventDescription = event.getDescription();
+        String category = event.getCategory().toString();
+
+        // Split the category string into primary and secondary names
+        String[] categoryParts = category.split("/");
+        String primaryName = categoryParts[0];
+        String secondaryName = categoryParts[1];
+
+        // Query the database to find the category ID
+        Integer categoryId = null;
+        String categoryQuery = "SELECT category_id FROM category WHERE primary_name = ? AND secondary_name = ?";
+        try (var conn = DriverManager.getConnection(url);
+             var pstmt = conn.prepareStatement(categoryQuery)) {
+            pstmt.setString(1, primaryName);
+            pstmt.setString(2, secondaryName);
+            try (var rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    categoryId = rs.getInt("category_id");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
+
+        if (categoryId == null) {
+            System.err.println("Category not found: " + category);
+            return;
+        }
+
+        // Insert the event into the database
+        String query = "INSERT INTO event (event_date, event_description, category_id) VALUES (?, ?, ?)";
+        try (var conn = DriverManager.getConnection(url);
+             var pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, eventDate);
+            pstmt.setString(2, eventDescription);
+            pstmt.setInt(3, categoryId);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
     @Override
     public List<Event> getEventsOfCategory(Category category) {
@@ -111,4 +148,7 @@ public class SQLiteEventProvider implements EventProvider {
     public String getIdentifier() {
         return "sqlite";
     }
+
+    @Override
+    public boolean isAddSupported() { return true; }
 }

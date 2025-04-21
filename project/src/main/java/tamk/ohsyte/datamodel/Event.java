@@ -16,11 +16,11 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Constructor that can be used by the subclasses.
-     * 
+     *
      * @param monthDay the month-day of the event
      * @param description the description of the event
      * @param category the category of the event
-     * 
+     *
      * @see Category
      */
     public Event(MonthDay monthDay, String description, Category category) {
@@ -31,7 +31,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Gets the month-day of the event.
-     * 
+     *
      * @return month-day
      */
     public MonthDay getMonthDay() {
@@ -40,7 +40,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Gets the event description.
-     * 
+     *
      * @return the description
      */
     public String getDescription() {
@@ -49,7 +49,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Gets the category of the event.
-     * 
+     *
      * @return the category
      * @see Category
      */
@@ -59,7 +59,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Returns a string representation of this event.
-     * 
+     *
      * @return the event as a string
      */
     @Override
@@ -71,7 +71,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Tests for equality with another event.
-     * 
+     *
      * @return true if events are equal, false otherwise
      */
     @Override
@@ -85,7 +85,7 @@ public abstract class Event implements Comparable<Event> {
         // Cast to our type:
         Event that = (Event) o;
 
-        if (Objects.equals(this.monthDay, that.monthDay) && 
+        if (Objects.equals(this.monthDay, that.monthDay) &&
             Objects.equals(this.description, that.description) &&
             Objects.equals(this.category, that.category)) {
             return true;
@@ -96,7 +96,7 @@ public abstract class Event implements Comparable<Event> {
 
     /**
      * Returns a hash code for this event.
-     * 
+     *
      * @return hash code computed based on the fields
      */
     @Override
