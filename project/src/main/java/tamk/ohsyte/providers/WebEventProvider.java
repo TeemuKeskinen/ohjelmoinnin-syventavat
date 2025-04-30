@@ -1,6 +1,7 @@
 package tamk.ohsyte.providers;
 
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,6 +12,8 @@ import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import tamk.ohsyte.filters.EventFilter;
+
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,13 +34,13 @@ import tamk.ohsyte.providers.EventDeserializer;
 
 public class WebEventProvider implements EventProvider {
     private final List<Event> events;
-    private URI serverUri;
-    private String identifier;
+    private  URI serverUri;
+    private final String identifier;
 
-    public WebEventProvider(URI serverUri) {
+    public WebEventProvider(URI serverUri, String identifier) {
+        this.identifier = identifier;
         this.serverUri = serverUri;
         this.events = new ArrayList<>();
-        fetchEvents();
     }
 
     private void fetchEvents() {
@@ -53,10 +56,7 @@ public class WebEventProvider implements EventProvider {
             int status = response.statusCode();
             if (status != 200) {
                 System.err.printf("HTTP response: %d%n", status);
-                System.err.println("Response body = " + bodyString);
-            } else {
-                System.out.println("Response headers: " + response.headers());
-                System.out.println("Response body = " + bodyString);
+                //System.err.println("Response body = " + bodyString);
             }
         } catch (IOException | InterruptedException ex) {
             System.err.println("Error sending HTTP request: " + ex.getLocalizedMessage());
@@ -74,10 +74,11 @@ public class WebEventProvider implements EventProvider {
             List<AnnualEvent> annualEvents = new ArrayList<>();
             List<SingularEvent> singularEvents = new ArrayList<>();
             for (Event event : webEvents) {
-                if (event instanceof AnnualEvent) {
-                    annualEvents.add((AnnualEvent) event);
-                } else if (event instanceof SingularEvent) {
-                    singularEvents.add((SingularEvent) event);
+                switch (event) {
+                    case AnnualEvent annualEvent -> annualEvents.add(annualEvent);
+                    case SingularEvent singularEvent -> singularEvents.add(singularEvent);
+                    default -> {
+                    }
                 }
             }
 
@@ -91,6 +92,9 @@ public class WebEventProvider implements EventProvider {
 
     @Override
     public List<Event> getEvents() {
+        if (this.events.isEmpty()) {
+            fetchEvents();
+        }
         return this.events;
     }
 
@@ -107,10 +111,15 @@ public class WebEventProvider implements EventProvider {
 
     @Override
     public List<Event> getEventsOfDate(MonthDay monthDay) {
-        List<Event> eventsOfDate = new ArrayList<Event>();
+        if (this.events.isEmpty()) {
+            fetchEvents();
+        }
+
+        List<Event> eventsOfDate = new ArrayList<>();
         for (Event event : this.events) {
             Month eventMonth;
             int eventDay;
+
             if (event instanceof SingularEvent) {
                 SingularEvent s = (SingularEvent) event;
                 eventMonth = s.getDate().getMonth();
@@ -121,9 +130,9 @@ public class WebEventProvider implements EventProvider {
                 eventDay = a.getMonthDay().getDayOfMonth();
             } else {
                 throw new UnsupportedOperationException(
-                        "Operation not supported for " +
-                        event.getClass().getName());
+                        "Operation not supported for " + event.getClass().getName());
             }
+
             if (monthDay.getMonth() == eventMonth && monthDay.getDayOfMonth() == eventDay) {
                 eventsOfDate.add(event);
             }
@@ -135,4 +144,48 @@ public class WebEventProvider implements EventProvider {
     public String getIdentifier() {
         return this.identifier;
     }
+
+    public URI getServerUri() {
+        return serverUri;
+    }
+
+    public void setServerUri(URI serverUri) {
+        this.serverUri = serverUri;
+    }
+
+    public List<Event> getFilteredEvents(EventFilter filter) {
+    if (this.events.isEmpty()) {
+        fetchEvents();
+    }
+    return this.events.stream()
+        .filter(filter::accepts)
+        .sorted((e1, e2) -> {
+            if (e1 instanceof SingularEvent && e2 instanceof SingularEvent) {
+                return ((SingularEvent) e1).getDate().compareTo(((SingularEvent) e2).getDate());
+            } else if (e1 instanceof AnnualEvent && e2 instanceof AnnualEvent) {
+                return e1.getMonthDay().compareTo(e2.getMonthDay());
+            }
+            return 0;
+        })
+        .toList();
+    }
+
+    @Override
+    public String getFilename() {
+        return this.serverUri.toString();
+    }
+
+    @Override
+    public void addEvent(Event event, String fileName) {
+        // This provider does not support adding events
+        // to the text file. The event is just added to the
+        // in-memory list.
+    throw new UnsupportedOperationException("Adding events is not supported by WebEventProvider.");
 }
+
+    @Override
+    public boolean isAddSupported() {
+        return false;
+    }
+}
+

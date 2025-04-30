@@ -2,20 +2,20 @@ package tamk.ohsyte;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import tamk.ohsyte.commands.AddEvent;
 import tamk.ohsyte.commands.ListEvents;
 import tamk.ohsyte.commands.ListProviders;
-import tamk.ohsyte.commands.AddEvent;
-import tamk.ohsyte.datamodel.*;
-import tamk.ohsyte.providers.*;
+import tamk.ohsyte.providers.CSVEventProvider;
+import tamk.ohsyte.providers.SQLiteEventProvider;
+import tamk.ohsyte.providers.TextFileEventProvider;
+import tamk.ohsyte.providers.WebEventProvider;
 
 @Command(name = "today", subcommands = { ListProviders.class, ListEvents.class, AddEvent.class }, description = "Shows events from history and annual observations")
 public class Today {
@@ -56,8 +56,8 @@ public class Today {
 
         // Add a web event provider
         try {
-            URI serverUri = new URI("https://todayserver-89bb2a1b2e80.herokuapp.com/api/v1/events?date=03-17");
-            manager.addEventProvider(new WebEventProvider(serverUri));
+            URI serverUri = new URI("https://todayserver-89bb2a1b2e80.herokuapp.com/api/v1/events?date=");
+            manager.addEventProvider(new WebEventProvider(serverUri, "web"));
         } catch (URISyntaxException e) {
             System.err.println("Invalid URI: " + e.getLocalizedMessage());
         }

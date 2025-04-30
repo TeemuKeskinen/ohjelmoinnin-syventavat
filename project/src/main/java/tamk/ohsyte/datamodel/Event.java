@@ -1,7 +1,7 @@
 package tamk.ohsyte.datamodel;
 
-import java.util.Objects;
 import java.time.MonthDay;
+import java.util.Objects;
 
 /**
  * Abstract superclass for representing an event in history.
@@ -28,6 +28,7 @@ public abstract class Event implements Comparable<Event> {
         this.description = description;
         this.category = category;
     }
+
 
     /**
      * Gets the month-day of the event.
@@ -56,6 +57,13 @@ public abstract class Event implements Comparable<Event> {
     public Category getCategory() {
         return this.category;
     }
+
+    /**
+     * Gets the provider of the event.
+     *
+     * @return the provider identifier
+     */
+    public abstract String getProvider();
 
     /**
      * Returns a string representation of this event.

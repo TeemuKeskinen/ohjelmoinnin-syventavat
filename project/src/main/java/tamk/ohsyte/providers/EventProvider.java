@@ -12,6 +12,6 @@ public interface EventProvider {
     List<Event> getEventsOfDate(MonthDay monthDay);
     String getIdentifier();
     String getFilename();
-    void addEvent(Event event);
+    void addEvent(Event event, String filename);
     default boolean isAddSupported() { return false; }
 }

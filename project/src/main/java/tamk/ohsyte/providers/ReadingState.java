@@ -19,7 +19,7 @@ public enum ReadingState {
     CATEGORY {
         @Override
         public ReadingState nextState() {
-            return BLANK;
+            return DATE;
         }
     },
 

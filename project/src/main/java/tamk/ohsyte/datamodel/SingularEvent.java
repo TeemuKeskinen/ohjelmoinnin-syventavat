@@ -9,9 +9,10 @@ import java.util.Objects;
  * Represents an event that has occurred once in history.
  */
 public class SingularEvent extends Event implements Comparable<Event> {
-    private int year;
+    private final int year;
 
     /**
+     *
      * Constructs a singular event with date, description, and category.
      *
      * @param date the date of the event
@@ -70,6 +71,11 @@ public class SingularEvent extends Event implements Comparable<Event> {
         }
 
         return false;
+    }
+
+    @Override
+    public String getProvider() {
+    return null;
     }
 
     /**

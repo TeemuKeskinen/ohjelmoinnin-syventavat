@@ -87,4 +87,9 @@ public class AnnualEvent extends Event implements Comparable<Event> {
                 otherEvent.getCategory(),
                 Comparator.naturalOrder());
     }
+
+    @Override
+    public String getProvider() {
+    return null;
+    }
 }

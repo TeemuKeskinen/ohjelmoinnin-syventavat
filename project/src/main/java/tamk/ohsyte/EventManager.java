@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import tamk.ohsyte.datamodel.Event;
 import tamk.ohsyte.filters.EventFilter;
 import tamk.ohsyte.providers.EventProvider;
+import tamk.ohsyte.providers.WebEventProvider;
 
 /**
  * Manages and queries the events available from event providers.
@@ -71,6 +72,20 @@ public class EventManager {
         return events;
     }
 
+    public List<Event> getProviderEvents(String providerId) {
+        EventProvider provider = eventProviders.stream()
+                .filter(p -> p.getIdentifier().equals(providerId))
+                .findFirst()
+                .orElse(null);
+
+        if (provider != null) {
+            return provider.getEvents();
+        } else {
+            System.err.println("Provider not found.");
+            return new ArrayList<>();
+        }
+    }
+
     /*
     public List<Event> getEventsOfDate(MonthDay monthDay) {
         List<Event> events = new ArrayList<>();
@@ -96,7 +111,8 @@ public class EventManager {
                 .orElse(null);
 
         if (provider != null && provider.isAddSupported()) {
-            provider.addEvent(event);
+            String fileName = provider.getFilename();
+            provider.addEvent(event, fileName);
         } else {
             System.err.println("Provider not found or does not support adding events.");
         }
@@ -111,7 +127,7 @@ public class EventManager {
     }
 
     /**
-     * Gets the event providers of the manager.
+     * Gets the event providers added to manager.
      *
      * @return list of event providers
      */
@@ -129,6 +145,13 @@ public class EventManager {
                 .toList();
     }
 
+    public List<String> getSupportedEventProviderIdentifiers() {
+        return this.eventProviders.stream()
+                .filter(EventProvider::isAddSupported)
+                .map(EventProvider::getIdentifier)
+                .toList();
+    }
+
     public List<EventProvider> getEventProviderFile() {
         return this.eventProviders.stream()
                 .filter(provider -> provider.getIdentifier().equals("file"))
@@ -142,8 +165,17 @@ public class EventManager {
      * @return list of events
      */
     public List<Event> getFilteredEvents(EventFilter filter) {
-        return this.getAllEvents().stream()
-                .filter(event -> filter.accepts(event))
-                .toList();
+    List<Event> filteredEvents = new ArrayList<>();
+
+    for (EventProvider provider : this.eventProviders) {
+        if (provider instanceof WebEventProvider webEventProvider) {
+            filteredEvents.addAll(webEventProvider.getFilteredEvents(filter));
+        } else {
+            filteredEvents.addAll(provider.getEvents().stream()
+                    .filter(filter::accepts)
+                    .toList());
+        }
+    }
+    return filteredEvents;
     }
 }

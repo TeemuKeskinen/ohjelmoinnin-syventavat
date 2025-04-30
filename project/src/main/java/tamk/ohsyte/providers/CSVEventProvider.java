@@ -25,10 +25,12 @@ import java.util.ArrayList;
 public class CSVEventProvider implements EventProvider {
     private final List<Event> events;
     private final String identifier;
+    private final String file;
 
     public CSVEventProvider(String fileName, String identifier) {
         this.identifier = identifier;
         this.events = new ArrayList<>();
+        this.file = fileName;
 
         try {
             CSVReader reader = new CSVReaderBuilder(new FileReader(fileName)).build();
@@ -131,11 +133,7 @@ public class CSVEventProvider implements EventProvider {
      */
     @Override
     public String getFilename() {
-        return EventManager.getInstance().getEventProviderFile().stream()
-                .filter(provider -> provider instanceof CSVEventProvider)
-                .map(provider -> ((CSVEventProvider) provider).identifier)
-                .findFirst()
-                .orElse(null);
+    return this.file;
     }
 
     /**
@@ -144,18 +142,23 @@ public class CSVEventProvider implements EventProvider {
      * @param event the event to add
      */
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, String fileName) {
         String eventDate = event instanceof SingularEvent ?
             ((SingularEvent) event).getDate().toString() :
             "--" + ((AnnualEvent) event).getMonthDay().toString();
         String eventDescription = event.getDescription();
         String category = event.getCategory().toString();
-        String fileName = this.getFilename();
+        String[] categoryParts = category.split(",");
 
         try (FileWriter writer = new FileWriter(fileName, true)) {
             writer.append(eventDate).append(",")
-                  .append(eventDescription).append(",")
-                  .append(category).append("\n");
+                  .append(eventDescription).append(",");
+                  if(categoryParts.length > 1) {
+                      writer.append(categoryParts[0]).append(",")
+                            .append(categoryParts[1]).append("\n");
+                  } else {
+                      writer.append(category).append("\n");
+                  }
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }

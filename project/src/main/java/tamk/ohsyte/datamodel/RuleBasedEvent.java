@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.MonthDay;
 
 public class RuleBasedEvent extends AnnualEvent {
-    private Rule rule;
+    private final Rule rule;
 
     public RuleBasedEvent(Rule rule, String description, Category category) {
         super(rule.getMonthDay(LocalDate.now().getYear()), description, category);

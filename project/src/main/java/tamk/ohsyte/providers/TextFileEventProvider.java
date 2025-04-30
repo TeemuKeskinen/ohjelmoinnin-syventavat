@@ -1,19 +1,19 @@
 package tamk.ohsyte.providers;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
+import tamk.ohsyte.EventFactory;
 import tamk.ohsyte.datamodel.AnnualEvent;
 import tamk.ohsyte.datamodel.Category;
 import tamk.ohsyte.datamodel.Event;
 import tamk.ohsyte.datamodel.SingularEvent;
-import tamk.ohsyte.EventFactory;
 
 /**
  * Provides events stored in a text file.
@@ -24,10 +24,14 @@ import tamk.ohsyte.EventFactory;
 public class TextFileEventProvider implements EventProvider {
     private final List<Event> events;
     private final String identifier;
+    private final Path filePath;
+
+
 
     public TextFileEventProvider(Path path, String identifier) {
         this.identifier = identifier;
         this.events = new ArrayList<>();
+        this.filePath = path;
 
         // We are loading from a local file,
         // so just cache the events for now.
@@ -50,7 +54,7 @@ public class TextFileEventProvider implements EventProvider {
                     state = ReadingState.DONE;
                 }
 
-                System.err.println("state = " + state);
+                // DEBUG LINE NOT NEEDED System.err.println("state = " + state);
 
                 switch (state) {
                     case DATE:
@@ -66,11 +70,7 @@ public class TextFileEventProvider implements EventProvider {
                     case CATEGORY:
                         categoryString = line;
                         state = state.nextState();
-                        break;
-
-                    case BLANK:
                         this.events.add(EventFactory.makeEvent(dateString, descriptionString, categoryString));
-                        state = state.nextState();
                         break;
 
                     case DONE:
@@ -133,6 +133,19 @@ public class TextFileEventProvider implements EventProvider {
         return result;
     }
 
+    @Override
+    public String getFilename() {
+        return this.filePath.getFileName().toString();
+        }
+
+    @Override
+    public void addEvent(Event event, String fileName) {
+        // This provider does not support adding events
+        // to the text file. The event is just added to the
+        // in-memory list.
+        throw new UnsupportedOperationException("Adding events is not supported by WebEventProvider.");
+    }
+
     /**
      * Gets the identifier of this event provider.
      *
@@ -143,6 +156,8 @@ public class TextFileEventProvider implements EventProvider {
         return this.identifier;
     }
 
+
+
     @Override
-    public boolean isAddSupported() { return true; }
+    public boolean isAddSupported() { return false; }
 }

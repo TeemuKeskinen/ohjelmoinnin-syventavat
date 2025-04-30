@@ -18,10 +18,12 @@ import tamk.ohsyte.datamodel.SingularEvent;
 public class SQLiteEventProvider implements EventProvider {
     private final String url;
     private final String identifier;
+    private final String file;
 
     public SQLiteEventProvider(String fileName, String identifier) {
         this.url = "jdbc:sqlite:" + fileName;
         this.identifier = identifier;
+        this.file = fileName;
         // TODO: normalize path separators to '/'
         //System.out.println("Database URL string = " + this.url);
     }
@@ -86,7 +88,7 @@ public class SQLiteEventProvider implements EventProvider {
         return result;
     }
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, String fileName) {
         String eventDate = event instanceof SingularEvent ?
             ((SingularEvent) event).getDate().toString() :
             "--" + ((AnnualEvent) event).getMonthDay().toString();
@@ -132,6 +134,11 @@ public class SQLiteEventProvider implements EventProvider {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @Override
+    public String getFilename() {
+        return this.file;
     }
 
     @Override
