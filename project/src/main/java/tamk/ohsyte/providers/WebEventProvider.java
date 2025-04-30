@@ -54,6 +54,7 @@ public class WebEventProvider implements EventProvider {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             bodyString = response.body();
             int status = response.statusCode();
+            System.out.println("Fetching events from: " + serverUri);
             if (status != 200) {
                 System.err.printf("HTTP response: %d%n", status);
                 //System.err.println("Response body = " + bodyString);
