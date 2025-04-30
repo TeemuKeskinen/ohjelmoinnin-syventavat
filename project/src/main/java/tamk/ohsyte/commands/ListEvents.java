@@ -61,6 +61,8 @@ public class ListEvents implements Runnable {
 
         EventManager manager = EventManager.getInstance();
 
+        String dateToAppend = (this.dateOptionString != null) ? this.dateOptionString : MonthDay.now().toString().substring(2);
+
         if ("web".equalsIgnoreCase(this.providerOptionString)) {
             WebEventProvider webEventProvider = (WebEventProvider) manager.getEventProviders().stream()
                 .filter(provider -> provider instanceof WebEventProvider)
@@ -72,9 +74,6 @@ public class ListEvents implements Runnable {
                 return;
             }
 
-            // Use the default date if no date is provided
-            String dateToAppend = (this.dateOptionString != null) ? this.dateOptionString : MonthDay.now().toString().substring(2);
-
             try {
                 URI updatedUri = new URI(webEventProvider.getServerUri() + dateToAppend);
                 webEventProvider.setServerUri(updatedUri);
@@ -82,21 +81,6 @@ public class ListEvents implements Runnable {
                 System.err.println("Invalid URI: " + e.getLocalizedMessage());
                 return;
             }
-
-            // Fetch events from the updated WebEventProvider
-            List<Event> webEvents = webEventProvider.getEvents();
-
-            if (webEvents.isEmpty()) {
-                System.out.println("No events found for the specified date.");
-                return;
-            }
-
-            System.out.println("Web events:");
-            for (Event event : webEvents) {
-                System.out.println(event);
-            }
-            return;
-        }
 
             // Fetch events from the updated WebEventProvider
             List<Event> webEvents = webEventProvider.getEvents();
