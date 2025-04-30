@@ -37,6 +37,8 @@ public class ListEvents implements Runnable {
     public void run() {
         Category category = null;
 
+        String dateToAppend = (this.dateOptionString != null) ? this.dateOptionString : MonthDay.now().toString().substring(2);
+
         if (this.categoryOptionString != null) {
             try {
                 category = Category.parse(this.categoryOptionString);
@@ -61,8 +63,6 @@ public class ListEvents implements Runnable {
 
         EventManager manager = EventManager.getInstance();
 
-        String dateToAppend = (this.dateOptionString != null) ? this.dateOptionString : MonthDay.now().toString().substring(2);
-
         if ("web".equalsIgnoreCase(this.providerOptionString)) {
             WebEventProvider webEventProvider = (WebEventProvider) manager.getEventProviders().stream()
                 .filter(provider -> provider instanceof WebEventProvider)
@@ -82,7 +82,6 @@ public class ListEvents implements Runnable {
                 return;
             }
 
-            // Fetch events from the updated WebEventProvider
             List<Event> webEvents = webEventProvider.getEvents();
 
             if (webEvents.isEmpty()) {
@@ -121,6 +120,23 @@ public class ListEvents implements Runnable {
 
             System.out.printf("Printing events for provider: %s%n", this.providerOptionString);
         } else {
+            WebEventProvider webEventProvider = (WebEventProvider) manager.getEventProviders().stream()
+                .filter(provider -> provider instanceof WebEventProvider)
+                .findFirst()
+                .orElse(null);
+
+            if (webEventProvider == null) {
+                System.err.println("No WebEventProvider is registered. Please add one first.");
+                return;
+            }
+
+            try {
+                URI updatedUri = new URI(webEventProvider.getServerUri() + dateToAppend);
+                webEventProvider.setServerUri(updatedUri);
+            } catch (URISyntaxException e) {
+                System.err.println("Invalid URI: " + e.getLocalizedMessage());
+                return;
+            }
             filteredEvents = manager.getFilteredEvents(filter);
         }
 
